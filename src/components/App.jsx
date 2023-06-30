@@ -1,16 +1,48 @@
-export const App = () => {
-  return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      React homework template
-    </div>
-  );
-};
+import { Modal } from './modal/Modal';
+import { SearchBar } from './searchBar/SearchBar';
+import { ImageGallery } from './imageGallery/ImageGallery';
+// import { Loader } from './loader/Loader';
+import { Component } from 'react';
+import PropTypes from 'prop-types';
+
+export class App extends Component {
+  state = {
+    showModal: false,
+    inputValue: '',
+    modalImg: '',
+  };
+
+  handleFormSubmit = inputValue => {
+    this.setState({ inputValue });
+  };
+
+  toggleModal = largeImageURL => {
+    this.setState(state => ({
+      showModal: !state.showModal,
+      modalImg: largeImageURL,
+    }));
+  };
+
+  render() {
+    const { showModal, inputValue, modalImg } = this.state;
+
+    return (
+      <div>
+        <SearchBar onSubmit={this.handleFormSubmit} />
+        <ImageGallery
+          inputValue={inputValue}
+          showModal={this.toggleModal}
+        ></ImageGallery>
+        <div>
+          {showModal && (
+            <Modal onClose={this.toggleModal} modalImg={modalImg}></Modal>
+          )}
+        </div>
+      </div>
+    );
+  }
+}
+
+// App.propTypes = {
+
+// }
