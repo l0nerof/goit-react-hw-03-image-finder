@@ -15,3 +15,8 @@ export class ImageGalleryItem extends Component {
     );
   }
 }
+
+ImageGalleryItem.propTypes = {
+  smallImg: PropTypes.string,
+  alt: PropTypes.string,
+};

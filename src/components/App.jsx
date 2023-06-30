@@ -1,9 +1,7 @@
 import { Modal } from './modal/Modal';
 import { SearchBar } from './searchBar/SearchBar';
 import { ImageGallery } from './imageGallery/ImageGallery';
-// import { Loader } from './loader/Loader';
 import { Component } from 'react';
-import PropTypes from 'prop-types';
 
 export class App extends Component {
   state = {
@@ -42,7 +40,3 @@ export class App extends Component {
     );
   }
 }
-
-// App.propTypes = {
-
-// }

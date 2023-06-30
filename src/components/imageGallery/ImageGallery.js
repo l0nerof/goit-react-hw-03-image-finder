@@ -96,3 +96,7 @@ export class ImageGallery extends Component {
     );
   }
 }
+
+ImageGallery.propTypes = {
+  inputValue: PropTypes.string,
+};

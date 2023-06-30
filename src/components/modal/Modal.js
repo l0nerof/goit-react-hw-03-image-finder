@@ -33,5 +33,6 @@ export class Modal extends Component {
   }
 }
 
-{
-}
+Modal.propTypes = {
+  modalImg: PropTypes.string,
+};
