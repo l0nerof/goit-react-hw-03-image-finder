@@ -27,13 +27,10 @@ export class App extends Component {
     return (
       <div>
         <SearchBar onSubmit={this.handleFormSubmit} />
-        <ImageGallery
-          inputValue={inputValue}
-          showModal={this.toggleModal}
-        ></ImageGallery>
+        <ImageGallery inputValue={inputValue} showModal={this.toggleModal} />
         <div>
           {showModal && (
-            <Modal onClose={this.toggleModal} modalImg={modalImg}></Modal>
+            <Modal onClose={this.toggleModal} modalImg={modalImg} />
           )}
         </div>
       </div>

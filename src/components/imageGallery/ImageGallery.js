@@ -4,6 +4,7 @@ import { ImageGalleryItem } from 'components/imageGalleryItem/ImageGalleryItem';
 import { Loader } from 'components/loader/Loader';
 import { Button } from 'components/button/Button';
 import { Component } from 'react';
+import { fetchImageGallery } from 'Api/fetchImageGallery';
 
 export class ImageGallery extends Component {
   state = {
@@ -23,10 +24,7 @@ export class ImageGallery extends Component {
       });
 
       setTimeout(() => {
-        fetch(
-          `https://pixabay.com/api/?q=${this.props.inputValue}&page=${this.state.page}&key=35821051-ff4ed7cb6cca304ad1608b196&image_type=photo&orientation=horizontal&per_page=12`
-        )
-          .then(res => res.json())
+        fetchImageGallery(this.props.inputValue, this.state.page)
           .then(({ hits, totalHits }) => {
             console.log(hits);
             if (hits.length === 0) {
@@ -50,10 +48,7 @@ export class ImageGallery extends Component {
     }));
 
     setTimeout(() => {
-      fetch(
-        `https://pixabay.com/api/?q=${this.props.inputValue}&page=${this.state.page}&key=35821051-ff4ed7cb6cca304ad1608b196&image_type=photo&orientation=horizontal&per_page=12`
-      )
-        .then(res => res.json())
+      fetchImageGallery(this.props.inputValue, this.state.page)
         .then(({ hits, totalHits }) => {
           console.log(hits);
           if (hits.length === 0) {
@@ -88,9 +83,9 @@ export class ImageGallery extends Component {
             })}
           </ul>
         )}
-        {this.state.loading && <Loader></Loader>}
+        {this.state.loading && <Loader />}
         {this.state.photos && !this.state.isHiddenButton && (
-          <Button loadMore={() => this.loadMore()}></Button>
+          <Button loadMore={() => this.loadMore()} />
         )}
       </div>
     );
