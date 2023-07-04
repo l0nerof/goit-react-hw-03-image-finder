@@ -16,77 +16,63 @@ export class ImageGallery extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.inputValue !== this.props.inputValue) {
-      this.setState({
-        loading: true,
-        photos: null,
-        page: 1,
-        isHiddenButton: false,
-      });
-
-      setTimeout(() => {
-        fetchImageGallery(this.props.inputValue, this.state.page)
-          .then(({ hits, totalHits }) => {
-            console.log(hits);
-            if (hits.length === 0) {
-              alert('Put more information');
-              this.setState({ isHiddenButton: true });
-            } else this.setState({ photos: hits });
-            if (12 * this.state.page > totalHits) {
-              this.setState({ isHiddenButton: true });
-            }
-          })
-          .finally(() => this.setState({ loading: false }));
+      this.setState({ page: 1, photos: null }, () => {
+        this.fetchImages();
       });
     }
   }
 
-  loadMore = () => {
-    this.setState(prevState => ({
-      page: prevState.page + 1,
-      loading: true,
-      isHiddenButton: false,
-    }));
+  fetchImages = () => {
+    const { inputValue } = this.props;
+    const { page } = this.state;
 
-    setTimeout(() => {
-      fetchImageGallery(this.props.inputValue, this.state.page)
-        .then(({ hits, totalHits }) => {
-          console.log(hits);
-          if (hits.length === 0) {
-            alert('Put more information');
-            this.setState({ isHiddenButton: true });
-          } else
-            this.setState(prevState => ({
-              photos: [...prevState.photos, ...hits],
-            }));
-          if (12 * this.state.page > totalHits) {
-            this.setState({ isHiddenButton: true });
-          }
-        })
-        .finally(() => this.setState({ loading: false }));
-    });
+    this.setState({ loading: true });
+
+    fetchImageGallery(inputValue, page)
+      .then(({ hits, totalHits }) => {
+        console.log(hits);
+        if (hits.length === 0) {
+          alert('Put more information');
+          this.setState({ isHiddenButton: true });
+        } else {
+          this.setState(prevState => ({
+            photos: prevState.photos ? [...prevState.photos, ...hits] : hits,
+            isHiddenButton: 12 * page > totalHits,
+            loading: false,
+          }));
+        }
+      })
+      .finally(() => this.setState({ loading: false }));
+  };
+
+  loadMore = () => {
+    this.setState(
+      prevState => ({
+        page: prevState.page + 1,
+      }),
+      this.fetchImages
+    );
   };
 
   render() {
+    const { photos, loading, isHiddenButton } = this.state;
+
     return (
       <div>
-        {this.state.photos && (
+        {photos && (
           <ul className={css.ImageGallery}>
-            {this.state.photos.map(photo => {
-              return (
-                <ImageGalleryItem
-                  key={photo.id}
-                  smallImg={photo.webformatURL}
-                  alt={photo.tags}
-                  showModal={() => this.props.showModal(photo.largeImageURL)}
-                />
-              );
-            })}
+            {photos.map(photo => (
+              <ImageGalleryItem
+                key={photo.id}
+                smallImg={photo.webformatURL}
+                alt={photo.tags}
+                showModal={() => this.props.showModal(photo.largeImageURL)}
+              />
+            ))}
           </ul>
         )}
-        {this.state.loading && <Loader />}
-        {this.state.photos && !this.state.isHiddenButton && (
-          <Button loadMore={() => this.loadMore()} />
-        )}
+        {loading && <Loader />}
+        {photos && !isHiddenButton && <Button loadMore={this.loadMore} />}
       </div>
     );
   }
